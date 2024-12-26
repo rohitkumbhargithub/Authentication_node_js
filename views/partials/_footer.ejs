@@ -1,0 +1,20 @@
+<footer class="bg-dark text-white py-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <p>&copy; 2024. All Rights Reserved.</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <ul class="list-unstyled d-flex justify-content-md-end">
+                    <% if (isAuthenticated) { %>
+                        <li class="ms-3"><a href="/create" class="text-white">Add Employee</a></li>
+                        <li class="ms-3"><a href="/" class="text-white">Home</a></li>
+                        <% } else { %>
+                            <li class="ms-3"><a href="/sign-in" class="text-white">Sign In</a></li>
+                            <li class="ms-3"><a href="/sign-up" class="text-white">Sign Up</a></li>
+                            <% } %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
