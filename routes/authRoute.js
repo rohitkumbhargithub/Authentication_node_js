@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const protectRoute = require("../middleware/protectRoute.js");
-const authController = require('../contollers/authContoller.js');
+const authController = require('../controllers/authContoller.js');
 const Emp = require('../model/empModel.js');
 
 router.get('/create', protectRoute, (req, res) => {
     const isAuthenticated = !!req.user;
-    return res.render("createEmp", { isAuthenticated: isAuthenticated  });
+    return res.render("createEmp", { isAuthenticated: isAuthenticated, message: req.flash('message')});
 })
 
 router.post('/create', protectRoute, authController.create);
@@ -21,7 +21,8 @@ router.get('/', protectRoute, async (req, res) => {
       
       res.render("home", { 
         employees: employees, 
-        isAuthenticated: isAuthenticated 
+        isAuthenticated: isAuthenticated,
+        message: req.flash('message'), 
       });
     } catch (error) {
       res.status(500).json({ error: "Error fetching employees", message: error.message });
@@ -35,14 +36,7 @@ router.get('/edit/:id', protectRoute, async (req, res) => {
         const employee = await Emp.findById(req.params.id);
         const isAuthenticated = !!req.user;
 
-        if (!employee) {
-            return res.status(404).json({
-                error: "Employee not found",
-                message: `No employee found with ID ${req.params.id}`,
-            });
-        }
-
-        return res.render("editEmp", { employee: employee, isAuthenticated: isAuthenticated  });
+        return res.render("editEmp", { employee: employee, isAuthenticated: isAuthenticated, message: req.flash('message')  });
     } catch (error) {
         return res.status(500).json({
             error: "Error fetching employee",
@@ -52,13 +46,13 @@ router.get('/edit/:id', protectRoute, async (req, res) => {
 });
 
 router.get('/sign-in', (req, res) => {
-    return res.render("signin")
+    return res.render("signin", { message: req.flash('message') })
 })
 
 router.post('/sign-in', authController.signin);
 
 router.get('/sign-up', (req, res) => {
-    return res.render("signup")
+    return res.render("signup", { message: req.flash('message') })
 });
 
 router.post('/sign-up', authController.signup);
@@ -66,7 +60,9 @@ router.post('/sign-up', authController.signup);
 router.get('/logout', (req, res) => {
     res.clearCookie('jwt'); 
     res.locals.isAuthenticated = false; 
-    res.redirect('/sign-in'); 
+    req.flash('message', 'Logged Out!');  
+    res.render("signin", { message: req.flash('message') });
+    res.redirect('/sign-in');  
 });
 
 module.exports = router;    

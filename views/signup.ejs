@@ -1,8 +1,15 @@
+<% if(message.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert" id="success-message">
+    <%= message %>
+  </div>
+<% } %>
+
+
 <div class="container w-50 mt-5">
     <h1 class="mt-2 text-center">Sign Up</h1> 
     <form action="/sign-up" method="POST">
       <div class="form-group">
-        <label for="exampleInputEmail1">Email name</label>
+        <label for="exampleInputEmail1">User name</label>
         <input 
           type="name" 
           name="name"
@@ -34,3 +41,19 @@
     </form>
   </div>
   
+
+  <script>
+   
+    setTimeout(function() {
+      var successMessage = document.getElementById('success-message');
+      if (successMessage) {
+        successMessage.classList.remove('show');
+        successMessage.classList.add('fade'); 
+        
+        
+        setTimeout(function() {
+          successMessage.remove(); 
+        }, 500);
+      }
+    }, 2000); 
+  </script>

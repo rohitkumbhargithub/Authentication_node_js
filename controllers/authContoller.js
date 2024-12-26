@@ -42,17 +42,9 @@ module.exports.create = async (req, res) => {
             file: req.file ? req.file.filename : null, 
           });
 
-          await newEmployee.save((err) => {
-            if(err){
-              res.json({ message: err.message, type: 'danger'})
-            } else{
-              req.session.message = {
-                type: "success",
-                message: "Employee Added."
-              }
-            }
-          });
-          // req.flash('success', 'Employee created successfully!');
+          await newEmployee.save();
+          req.flash('message', 'Emp Saved!');
+
         }
 
         res.redirect("/");
@@ -95,6 +87,8 @@ module.exports.deleteEmp = async (req, res) => {
 
     await Emp.findByIdAndDelete(req.params.id);
 
+    req.flash('message', 'Emp deleted!');
+
     return res.redirect("/");
   } catch (error) {
     console.error(error.message);
@@ -131,10 +125,13 @@ module.exports.edit = async (req, res) => {
       }
 
       if (!req.body.name || !req.body.designation || !req.body.email) {
-        return res.status(400).json({
-          error: "Missing required fields",
-          message: "Name, designation, and email are required",
-        });
+        // return res.status(400).json({
+        //   error: "Missing required fields",
+        //   message: "Name, designation, and email are required",
+        // });
+
+        req.flash('message', 'Name, designation, and email are required.');
+
       }
 
       try {
@@ -142,10 +139,8 @@ module.exports.edit = async (req, res) => {
         const employee = await Emp.findById(req.params.id);
 
         if (!employee) {
-          return res.status(404).json({
-            error: "Employee not found",
-            message: `No employee found with ID ${req.params.id}`,
-          });
+  
+          req.flash('message', 'Employee not found.');
         }
 
         employee.name = name;
@@ -164,6 +159,8 @@ module.exports.edit = async (req, res) => {
         }
 
         await employee.save();
+        req.flash('message', 'Employee data edited!');
+        
         return res.redirect("/");
       } catch (error) {
         return res.status(500).json({
@@ -191,14 +188,14 @@ module.exports.signin = async (req, res) => {
     );
 
     if (!user || !isPasswordCorrect) {
-      return res.status(400).json({ error: "Invalid username or password" });
+      req.flash('message', 'Invalid Username and password!');
+      return res.redirect("/sign-in");
     }
 
     generateTokenAndSetCookie(user._id, res);
-
+    req.flash('message', 'Logged In!');
     return res.redirect("/");
 
-    // return res.status(200).json({ data: user});
   } catch (error) {
     console.log("Error in login controller", error.message);
     res.status(500).json({ error: "Internal Server Error" });
@@ -209,10 +206,16 @@ module.exports.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    const user = await User.findOne({ email });
+
+    if(user.email){
+      req.flash('message', 'Email already taken!');
+      return res.redirect("/sign-up");
+    }
+
     if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ error: "Password must be at least 6 characters long" });
+      req.flash('message', 'Password must be 6 characters');
+      return res.redirect("/sign-up");
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -232,7 +235,7 @@ module.exports.signup = async (req, res) => {
       //   name: newUser.name,
       //   email: newUser.email,
       // });
-
+      req.flash('message', 'Logged In!');
       return res.redirect("/");
     } else {
       res.status(400).json({ error: "Invalid user data" });

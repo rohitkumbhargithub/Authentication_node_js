@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const cookieparser = require('cookie-parser');
 const port = 3000;
 const bodyparser = require('body-parser');
+const session = require('express-session');
+const flash = require("connect-flash");
 const db = require('./db/mongoose.js');
 const authRoutes = require('./routes/authRoute.js');
 const authMiddleware = require("./middleware/authMiddleware.js");
@@ -29,6 +31,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
 app.use(cookieparser());
+app.use(session({
+    secret: 'secret',
+    cookie: { maxAge: 60000 },
+    resave: false,
+    saveUninitialized: false,
+}))
+app.use(flash());
 app.use(authMiddleware);
 
 app.use('/', authRoutes);

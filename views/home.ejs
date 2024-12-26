@@ -1,4 +1,9 @@
  
+  <% if(message.length > 0) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-message">
+      <%= message %>
+    </div>
+  <% } %>
   <h1 class="text-center m-2">Employees Details</h1>
 
   <table class="table p-3 mt-3">
@@ -56,5 +61,20 @@
     </tbody>
 </table>
 
+<script>
+   
+    setTimeout(function() {
+      var successMessage = document.getElementById('success-message');
+      if (successMessage) {
+        successMessage.classList.remove('show');
+        successMessage.classList.add('fade'); 
+        
+        
+        setTimeout(function() {
+          successMessage.remove(); 
+        }, 500);
+      }
+    }, 2000); 
+  </script>
   
   
