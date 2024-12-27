@@ -78,9 +78,11 @@ module.exports.deleteEmp = async (req, res) => {
 
       fs.unlink(filePath, (err) => {
         if (err) {
-          return res
-            .status(404)
-            .json("Error while deleting file:", err.message);
+          // return res
+          //   .status(404)
+          //   .json("Error while deleting file:", err.message);
+
+          req.flash('message', 'Emp Deleted!');
         }
       });
     }
@@ -208,7 +210,7 @@ module.exports.signup = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if(user.email){
+    if(user){
       req.flash('message', 'Email already taken!');
       return res.redirect("/sign-up");
     }
@@ -238,10 +240,13 @@ module.exports.signup = async (req, res) => {
       req.flash('message', 'Logged In!');
       return res.redirect("/");
     } else {
-      res.status(400).json({ error: "Invalid user data" });
+      // res.status(400).json({ error: "Invalid user data" });
+      req.flash('message', 'Invalid user data!');
     }
   } catch (error) {
-    console.log("Error in signup controller", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    // console.log("Error in signup controller", error.message);
+    // res.status(500).json({ error: "Internal Server Error" });
+    req.flash('message', 'Internal Server Error');
+    
   }
 };

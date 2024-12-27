@@ -6,7 +6,7 @@ const Emp = require('../model/empModel.js');
 
 router.get('/create', protectRoute, (req, res) => {
     const isAuthenticated = !!req.user;
-    return res.render("createEmp", { isAuthenticated: isAuthenticated, message: req.flash('message')});
+    return res.render("createEmp", { isAuthenticated: isAuthenticated, user: req.user, message: req.flash('message')});
 })
 
 router.post('/create', protectRoute, authController.create);
@@ -22,6 +22,7 @@ router.get('/', protectRoute, async (req, res) => {
       res.render("home", { 
         employees: employees, 
         isAuthenticated: isAuthenticated,
+        user: req.user,
         message: req.flash('message'), 
       });
     } catch (error) {
@@ -36,7 +37,7 @@ router.get('/edit/:id', protectRoute, async (req, res) => {
         const employee = await Emp.findById(req.params.id);
         const isAuthenticated = !!req.user;
 
-        return res.render("editEmp", { employee: employee, isAuthenticated: isAuthenticated, message: req.flash('message')  });
+        return res.render("editEmp", { employee: employee, isAuthenticated: isAuthenticated, user: req.user, message: req.flash('message')  });
     } catch (error) {
         return res.status(500).json({
             error: "Error fetching employee",

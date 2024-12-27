@@ -1,25 +1,42 @@
 <nav class="navbar navbar-light bg-light justify-content-between p-3">
-  <div>
-    <a class="navbar-brand" href="/">Navbar</a>
+  <div class="d-flex align-items-center">
+    <% if (isAuthenticated) { %>
+      <a class="navbar-brand me-3" style="font-size: 18px;" href="/">
+      <div class="d-flex align-items-center">
+        <% if (user.name) { %>
+          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2" 
+               style="width: 40px; height: 40px; font-weight: bold;">
+            <%= user.name[0].toUpperCase() %>
+          </div>
+        <% } %>
+        <div>
+          <p class="mb-0">Welcome, <%= user.name %></p>
+          <small class="text-muted"><%= user.email %></small>
+        </div>
+      </div>
+    <% } else { %>
+      <p class="mb-0">EMS Soft</p>
+    <% } %>
   </div>
-  
+</a>
+
   <div class="d-inline-flex">
     <ul class="navbar-nav">
-        <% if (isAuthenticated) { %>
-            <li class="nav-item">
-              <a class="nav-link" href="/create">Add Employee</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/logout">Logout</a>
-            </li>
-        <% } else { %>
-            <li class="nav-item">
-                <a class="nav-link" href="/sign-in">Signin</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/sign-up">Signup</a>
-            </li>
-        <% } %>
+      <% if (isAuthenticated) { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/create">Add Employee</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+      <% } else { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/sign-in">Signin</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/sign-up">Signup</a>
+        </li>
+      <% } %>
     </ul>
   </div>
 </nav>
